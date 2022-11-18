@@ -6,7 +6,7 @@
 
 namespace Scout
 {
-    std::unique_ptr<IGraphicsEngine> MakeGraphicsEngine(const GraphicsEngineDef def)
+    std::unique_ptr<IGraphicsEngine> MakeGraphicalEngine(const GraphicsEngineDef def)
     {
         return std::make_unique<GraphicsEngine_SDL>(def.viewportWidth, def.viewportHeight);
     }

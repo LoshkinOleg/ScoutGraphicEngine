@@ -85,5 +85,5 @@ namespace Scout
     /*
         Factory function for creating graphical renderer implementations.
     */
-    std::unique_ptr<IGraphicsEngine> MakeGraphicsEngine(const GraphicsEngineDef def);
+    std::unique_ptr<IGraphicsEngine> MakeGraphicalEngine(const GraphicsEngineDef def);
 }
