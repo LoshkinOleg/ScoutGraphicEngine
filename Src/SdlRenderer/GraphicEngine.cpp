@@ -60,8 +60,13 @@ namespace Scout
 		const float thickness,
 		const Color color)
 	{
+		if(color.a == 0.0f) return;
+
+		const auto clampedXPos = std::clamp(xPos, -1.0f, 1.0f);
+		const auto clampedYPos = std::clamp(yPos, -1.0f, 1.0f);
+
 		SDL_SetRenderDrawColor(pRenderer_, (Uint8)(color.r * 255.f), (Uint8)(color.g * 255.0f), (Uint8)(color.b * 255.0f), (Uint8)(color.a * 255.0f));
-		SDL_RenderDrawPoint(pRenderer_, (int)xPos * viewportWidth_, (int)yPos * viewportHeight_);
+		SDL_RenderDrawPoint(pRenderer_, (int)(clampedXPos * (float)viewportWidth_), (int)(clampedYPos * (float)viewportHeight_));
 	}
 
 	void GraphicsEngine_SDL::DrawLine(
@@ -70,13 +75,20 @@ namespace Scout
 		const float thickness,
 		const Color color)
 	{
+		if(color.a == 0.0f) return;
+
+		const auto clampedXPos0 = std::clamp(xPos0, -1.0f, 1.0f);
+		const auto clampedYPos0 = std::clamp(yPos0, -1.0f, 1.0f);
+		const auto clampedXPos1 = std::clamp(xPos1, -1.0f, 1.0f);
+		const auto clampedYPos1 = std::clamp(yPos1, -1.0f, 1.0f);
+
 		SDL_SetRenderDrawColor(pRenderer_, (Uint8)(color.r * 255.f), (Uint8)(color.g * 255.0f), (Uint8)(color.b * 255.0f), (Uint8)(color.a * 255.0f));
 		SDL_RenderDrawLine(
 			pRenderer_,
-			(int)(xPos0 * (float)viewportWidth_),
-			(int)(yPos0 * (float)viewportHeight_),
-			(int)(xPos1 * (float)viewportWidth_),
-			(int)(yPos1 * (float)viewportHeight_));
+			(int)(clampedXPos0 * (float)viewportWidth_),
+			(int)(clampedYPos0 * (float)viewportHeight_),
+			(int)(clampedXPos1 * (float)viewportWidth_),
+			(int)(clampedYPos1 * (float)viewportHeight_));
 	}
 
 	void GraphicsEngine_SDL::DrawTriangle(
@@ -87,11 +99,20 @@ namespace Scout
 		const Color color,
 		const bool filled)
 	{
+		if(color.a == 0.0f) return;
+
+		const auto clampedXPos0 = std::clamp(xPos0, -1.0f, 1.0f);
+		const auto clampedYPos0 = std::clamp(yPos0, -1.0f, 1.0f);
+		const auto clampedXPos1 = std::clamp(xPos1, -1.0f, 1.0f);
+		const auto clampedYPos1 = std::clamp(yPos1, -1.0f, 1.0f);
+		const auto clampedXPos2 = std::clamp(xPos2, -1.0f, 1.0f);
+		const auto clampedYPos2 = std::clamp(yPos2, -1.0f, 1.0f);
+
 		if (filled) throw std::runtime_error("DrawTriangle: Implement usage of filled");
 
-		DrawLine(xPos0, yPos0, xPos1, yPos1, thickness, color);
-		DrawLine(xPos1, yPos1, xPos2, yPos2, thickness, color);
-		DrawLine(xPos2, yPos2, xPos0, yPos0, thickness, color);
+		DrawLine(clampedXPos0, clampedYPos0, clampedXPos1, clampedYPos1, thickness, color);
+		DrawLine(clampedXPos1, clampedYPos1, clampedXPos2, clampedYPos2, thickness, color);
+		DrawLine(clampedXPos2, clampedYPos2, clampedXPos0, clampedYPos0, thickness, color);
 	}
 
 	void GraphicsEngine_SDL::DrawCircle(
@@ -102,6 +123,16 @@ namespace Scout
 		const bool filled)
 	{
 		throw std::runtime_error("GraphicsEngine_SDL::DrawCircle: Implement this.");
+		if(color.a == 0.0f) return;
+	}
+	Vec2 GraphicsEngine_SDL::ClipSpaceToScreenSpace(const Vec2 clipSpaceCoord) const
+	{
+		// To screen space following "Viewport transform" section of: https://www.khronos.org/opengl/wiki/Viewport_Transform note: adjusted to fit SDL's coordinate convention.
+		return
+		{
+			viewportWidth_ * 0.5f * clipSpaceCoord.x + viewportWidth_ * 0.5f,
+			viewportHeight_ - (viewportHeight_ * 0.5f * clipSpaceCoord.y + viewportHeight_ * 0.5f)
+		};
 	}
 	void* GraphicsEngine_SDL::GetImplementationApi()
 	{
@@ -115,11 +146,11 @@ namespace Scout
 	{
 		return pRenderer_;
 	}
-	std::uint32_t GraphicsEngine_SDL::GetViewportWidth() const
+	std::uint64_t GraphicsEngine_SDL::GetViewportWidth() const
 	{
 		return viewportWidth_;
 	}
-	std::uint32_t GraphicsEngine_SDL::GetViewportHeight() const
+	std::uint64_t GraphicsEngine_SDL::GetViewportHeight() const
 	{
 		return viewportHeight_;
 	}

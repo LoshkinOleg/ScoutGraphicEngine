@@ -61,12 +61,14 @@ namespace Scout
             const Color color,
             const bool filled) override;
 
+        Vec2 ClipSpaceToScreenSpace(const Vec2 clipSpaceCoord) const override;
+
         void* GetImplementationApi() override;
         void RegisterUiDrawingCallback(ImmediateModeUiDrawingCallback callback) override;
 
         SDL_Renderer* GetSdlRenderer();
-        std::uint32_t GetViewportWidth() const;
-        std::uint32_t GetViewportHeight() const;
+        std::uint64_t GetViewportWidth() const override;
+        std::uint64_t GetViewportHeight() const override;
 
     private:
         constexpr static const Color CLEAR_COLOR_ = COLOR_BLACK;

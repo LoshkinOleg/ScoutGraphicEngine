@@ -51,6 +51,10 @@ namespace Scout
             const Color color,
             const bool filled) = 0;
 
+        virtual Vec2 ClipSpaceToScreenSpace(const Vec2 clipSpaceCoord) const = 0;
+        virtual std::uint64_t GetViewportWidth() const = 0;
+        virtual std::uint64_t GetViewportHeight() const = 0;
+
         virtual void* GetImplementationApi() = 0;
         virtual void RegisterUiDrawingCallback(ImmediateModeUiDrawingCallback callback) = 0;
     };

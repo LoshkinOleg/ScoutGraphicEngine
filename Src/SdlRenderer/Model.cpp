@@ -32,45 +32,46 @@ namespace Scout
         const auto len = vertices_.size();
         for (size_t i = 0; i < len; i += 3)
         {
-            const auto pt0_world = transformation * Vec4(vertices_[i].x, vertices_[i].y, vertices_[i].z, 0.0f);
-            const auto pt1_world = transformation * Vec4(vertices_[i + 1].x, vertices_[i + 1].y, vertices_[i + 1].z, 0.0f);
-            const auto pt2_world = transformation * Vec4(vertices_[i + 2].x, vertices_[i + 2].y, vertices_[i + 2].z, 0.0f);
+            // TODO: w component is supposed to be 1.0, not 0.0 for translations to work, debug it
+            const auto pt0_udc = transformation * Vec4(vertices_[i].x, vertices_[i].y, vertices_[i].z, 1.0f);
+            const auto pt1_udc = transformation * Vec4(vertices_[i + 1].x, vertices_[i + 1].y, vertices_[i + 1].z, 1.0f);
+            const auto pt2_udc = transformation * Vec4(vertices_[i + 2].x, vertices_[i + 2].y, vertices_[i + 2].z, 1.0f);
 
             // To screen space following "Viewport transform" section of: https://www.khronos.org/opengl/wiki/Viewport_Transform note: adjusted to fit SDL's coordinate convention.
-            const Vec2 windowPt0 =
+            const Vec2 pt0_screenspace =
             {
-                viewportWidth * 0.5f * pt0_world.x + viewportWidth * 0.5f,
-                viewportHeight - (viewportHeight * 0.5f * pt0_world.y + viewportHeight * 0.5f)
+                viewportWidth * 0.5f * pt0_udc.x + viewportWidth * 0.5f,
+                viewportHeight - (viewportHeight * 0.5f * pt0_udc.y + viewportHeight * 0.5f)
             };
-            const Vec2 windowPt1 =
+            const Vec2 pt1_screenspace =
             {
-                viewportWidth * 0.5f * pt1_world.x + viewportWidth * 0.5f,
-                viewportHeight - (viewportHeight * 0.5f * pt1_world.y + viewportHeight * 0.5f)
+                viewportWidth * 0.5f * pt1_udc.x + viewportWidth * 0.5f,
+                viewportHeight - (viewportHeight * 0.5f * pt1_udc.y + viewportHeight * 0.5f)
             };
-            const Vec2 windowPt2 =
+            const Vec2 pt2_screenspace =
             {
-                viewportWidth * 0.5f * pt2_world.x + viewportWidth * 0.5f,
-                viewportHeight - (viewportHeight * 0.5f * pt2_world.y + viewportHeight * 0.5f)
+                viewportWidth * 0.5f * pt2_udc.x + viewportWidth * 0.5f,
+                viewportHeight - (viewportHeight * 0.5f * pt2_udc.y + viewportHeight * 0.5f)
             };
 
             SDL_RenderDrawLine(
                 pSdlRenderer,
-                (int)(windowPt0.x),
-                (int)(windowPt0.y),
-                (int)(windowPt1.x),
-                (int)(windowPt1.y));
+                (int)(pt0_screenspace.x),
+                (int)(pt0_screenspace.y),
+                (int)(pt1_screenspace.x),
+                (int)(pt1_screenspace.y));
             SDL_RenderDrawLine(
                 pSdlRenderer,
-                (int)(windowPt1.x),
-                (int)(windowPt1.y),
-                (int)(windowPt2.x),
-                (int)(windowPt2.y));
+                (int)(pt1_screenspace.x),
+                (int)(pt1_screenspace.y),
+                (int)(pt2_screenspace.x),
+                (int)(pt2_screenspace.y));
             SDL_RenderDrawLine(
                 pSdlRenderer,
-                (int)(windowPt2.x),
-                (int)(windowPt2.y),
-                (int)(windowPt0.x),
-                (int)(windowPt0.y));
+                (int)(pt2_screenspace.x),
+                (int)(pt2_screenspace.y),
+                (int)(pt0_screenspace.x),
+                (int)(pt0_screenspace.y));
         }
     }
 }
