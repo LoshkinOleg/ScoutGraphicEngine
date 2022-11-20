@@ -12,7 +12,7 @@ namespace Scout
 		pRenderer_ = SDL_CreateRenderer(Window_SDL_OpenGL33::Get().GetSdlWindow(), -1, SDL_RENDERER_ACCELERATED);
 	}
 
-	void GraphicsEngine_SDL::SetViewMatrix(const Mat4x4& viewMatrix)
+	void GraphicsEngine_SDL::SetViewMatrix(const glm::mat4& viewMatrix)
 	{
 		viewMatrix_ = viewMatrix;
 	}
@@ -58,7 +58,7 @@ namespace Scout
 	void GraphicsEngine_SDL::DrawPoint(
 		const float xPos, const float yPos,
 		const float thickness,
-		const Color color)
+		const glm::vec4 color)
 	{
 		if(color.a == 0.0f) return;
 
@@ -73,7 +73,7 @@ namespace Scout
 		const float xPos0, const float yPos0,
 		const float xPos1, const float yPos1,
 		const float thickness,
-		const Color color)
+		const glm::vec4 color)
 	{
 		if(color.a == 0.0f) return;
 
@@ -96,7 +96,7 @@ namespace Scout
 		const float xPos1, const float yPos1,
 		const float xPos2, const float yPos2,
 		const float thickness,
-		const Color color,
+		const glm::vec4 color,
 		const bool filled)
 	{
 		if(color.a == 0.0f) return;
@@ -119,20 +119,11 @@ namespace Scout
 		const float xPos, const float yPos,
 		const float radius,
 		const float thickness,
-		const Color color,
+		const glm::vec4 color,
 		const bool filled)
 	{
 		throw std::runtime_error("GraphicsEngine_SDL::DrawCircle: Implement this.");
 		if(color.a == 0.0f) return;
-	}
-	Vec2 GraphicsEngine_SDL::ClipSpaceToScreenSpace(const Vec2 clipSpaceCoord) const
-	{
-		// To screen space following "Viewport transform" section of: https://www.khronos.org/opengl/wiki/Viewport_Transform note: adjusted to fit SDL's coordinate convention.
-		return
-		{
-			viewportWidth_ * 0.5f * clipSpaceCoord.x + viewportWidth_ * 0.5f,
-			viewportHeight_ - (viewportHeight_ * 0.5f * clipSpaceCoord.y + viewportHeight_ * 0.5f)
-		};
 	}
 	void* GraphicsEngine_SDL::GetImplementationApi()
 	{
@@ -142,6 +133,12 @@ namespace Scout
 	{
 		uiSystemRender_ = callback;
 	}
+
+	glm::vec2 GraphicsEngine_SDL::WorldToScreenSpace(const glm::vec4 worldPos, const glm::mat4& modelMatrix) const
+	{
+		
+	}
+
 	SDL_Renderer* GraphicsEngine_SDL::GetSdlRenderer()
 	{
 		return pRenderer_;

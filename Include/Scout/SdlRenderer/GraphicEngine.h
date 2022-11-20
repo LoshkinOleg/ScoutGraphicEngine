@@ -32,7 +32,7 @@ namespace Scout
 
         GraphicsEngine_SDL(const std::uint32_t viewportWidth, const std::uint32_t viewportHeight);
 
-        void SetViewMatrix(const Mat4x4& viewMatrix) override;
+        void SetViewMatrix(const glm::mat4& viewMatrix) override;
         ModelHandle MakeModel(const ModelDef def) override;
 
         void Schedule(const ModelHandle modelId) override;
@@ -41,47 +41,47 @@ namespace Scout
         void DrawPoint(
             const float xPos, const float yPos,
             const float thickness,
-            const Color color) override;
+            const glm::vec4 color) override;
         void DrawLine(
             const float xPos0, const float yPos0,
             const float xPos1, const float yPos1,
             const float thickness,
-            const Color color) override;
+            const glm::vec4 color) override;
         void DrawTriangle(
             const float xPos0, const float yPos0,
             const float xPos1, const float yPos1,
             const float xPos2, const float yPos2,
             const float thickness,
-            const Color color,
+            const glm::vec4 color,
             const bool filled) override;
         void DrawCircle(
             const float xPos, const float yPos,
             const float radius,
             const float thickness,
-            const Color color,
+            const glm::vec4 color,
             const bool filled) override;
-
-        Vec2 ClipSpaceToScreenSpace(const Vec2 clipSpaceCoord) const override;
 
         void* GetImplementationApi() override;
         void RegisterUiDrawingCallback(ImmediateModeUiDrawingCallback callback) override;
+
+        glm::vec2 WorldToScreenSpace(const glm::vec4 worldPos, const glm::mat4& modelMatrix) const override;
 
         SDL_Renderer* GetSdlRenderer();
         std::uint64_t GetViewportWidth() const override;
         std::uint64_t GetViewportHeight() const override;
 
     private:
-        constexpr static const Color CLEAR_COLOR_ = COLOR_BLACK;
+        constexpr static const glm::vec4 CLEAR_COLOR_ = COLOR_BLACK;
 
         SDL_Renderer* pRenderer_ = nullptr;
         std::uint32_t viewportWidth_ = 0, viewportHeight_ = 0;
 
         ImmediateModeUiDrawingCallback uiSystemRender_{};
 
-        Mat4x4 viewMatrix_ = MAT4_IDENTITY;
-        Mat4x4 projMatrix_ = UNIT_ORTHO_PROJECTION;
+        glm::mat4 viewMatrix_ = MAT4_IDENTITY;
+        glm::mat4 projMatrix_ = UNIT_ORTHOGRAPHIC;
         std::vector<Model_SDL> models_{};
-        std::vector<Mat4x4*> modelMatrices_{};
+        std::vector<glm::mat4*> modelMatrices_{};
         std::set<ModelHandle> toRender_{};
 	};
 }

@@ -5,21 +5,20 @@
 
 #include <Scout/TypedefAndEnum.h>
 #include <Scout/Math.h>
-#include <Scout/Color.h>
 
 namespace Scout
 {
     struct ModelDef
     {
-        std::vector<Vec3> vertices{};
-        Mat4x4* pModelMatrix = nullptr;
-        Color modelColor = COLOR_CLEAR;
+        std::vector<glm::vec3> vertices{};
+        glm::mat4* pModelMatrix = nullptr;
+        glm::vec4 modelColor = COLOR_CLEAR;
     };
 
     class IGraphicsEngine
     {
     public:
-        virtual void SetViewMatrix(const Mat4x4& viewMatrix) = 0;
+        virtual void SetViewMatrix(const glm::mat4& viewMatrix) = 0;
         virtual ModelHandle MakeModel(const ModelDef def) = 0;
 
         virtual void Schedule(const ModelHandle modelId) = 0;
@@ -31,27 +30,28 @@ namespace Scout
         virtual void DrawPoint(
             const float xPos, const float yPos,
             const float thickness,
-            const Color color) = 0;
+            const glm::vec4 color) = 0;
         virtual void DrawLine(
             const float xPos0, const float yPos0,
             const float xPos1, const float yPos1,
             const float thickness,
-            const Color color) = 0;
+            const glm::vec4 color) = 0;
         virtual void DrawTriangle(
             const float xPos0, const float yPos0,
             const float xPos1, const float yPos1,
             const float xPos2, const float yPos2,
             const float thickness,
-            const Color color,
+            const glm::vec4 color,
             const bool filled) = 0;
         virtual void DrawCircle(
             const float xPos, const float yPos,
             const float radius,
             const float thickness,
-            const Color color,
+            const glm::vec4 color,
             const bool filled) = 0;
 
-        virtual Vec2 ClipSpaceToScreenSpace(const Vec2 clipSpaceCoord) const = 0;
+        virtual glm::vec2 VertexTo(const glm::vec4 worldPos, const glm::mat4& modelMatrix) const = 0;
+
         virtual std::uint64_t GetViewportWidth() const = 0;
         virtual std::uint64_t GetViewportHeight() const = 0;
 

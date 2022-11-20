@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include <Scout/Color.h>
 #include <Scout/Math.h>
 
 namespace Scout
@@ -15,12 +14,12 @@ namespace Scout
         /*
         @vertices Unindexed vertex positions of triangles composing this mesh.
         */
-        Model_SDL(const std::vector<Vec3>& vertices, const Color modelColor);
+        Model_SDL(const std::vector<glm::vec3>& vertices, const glm::vec4 modelColor);
 
-        void Draw(GraphicsEngine_SDL& graphicalEngine, const Mat4x4& viewMat, const Mat4x4& projMat, const Mat4x4& modelMat) const;
+        void Draw(GraphicsEngine_SDL& graphicalEngine, const glm::mat4& viewMat, const glm::mat4& projMat, const glm::mat4& modelMat) const;
 
     private:
-        std::vector<Vec4> vertices_{};
-        Color modelColor_ = COLOR_CLEAR;
+        std::vector<glm::vec4> vertices_{};
+        glm::vec4 modelColor_ = COLOR_CLEAR;
     };
 }
